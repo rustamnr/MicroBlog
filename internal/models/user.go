@@ -51,5 +51,4 @@ func (user *User) SetUserEmail(email string) error {
 
 	user.email = addr.Address
 	return nil
-
 }
