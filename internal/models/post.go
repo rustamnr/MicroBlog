@@ -7,54 +7,54 @@ import (
 )
 
 type Post struct {
-	createdAt time.Time     `json: "createdAt"`
-	updatedAt time.Time     `json: "updatedAt"`
-	text      string        `json: "test"`
-	user      *User         `json: "user"`
-	likes     map[int]*Like `json: "likes"`
-	id        uuid.UUID     `json: id`
+	CreatedAt time.Time     `json:"createdAt"`
+	UpdatedAt time.Time     `json:"updatedAt"`
+	Text      string        `json:"test"`
+	User      *User         `json:"user"`
+	Likes     map[int]*Like `json:"likes"`
+	Id        uuid.UUID     `json:"id"`
 }
 
 func NewPost(user *User, text string) *Post {
 	return &Post{
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
-		text:      text,
-		user:      user,
-		likes:     make(map[int]*Like),
-		id:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Text:      text,
+		User:      user,
+		Likes:     make(map[int]*Like),
+		Id:        uuid.New(),
 	}
 }
 
-func (post *Post) CreatedAt() time.Time {
-	return post.createdAt
-}
+// func (post *Post) CreatedAt() time.Time {
+// 	return post.createdAt
+// }
 
-func (post *Post) UpdateAt() time.Time {
-	return post.updatedAt
-}
+// func (post *Post) UpdateAt() time.Time {
+// 	return post.updatedAt
+// }
 
-func (post *Post) Text() string {
-	return post.text
-}
+// func (post *Post) Text() string {
+// 	return post.text
+// }
 
-func (post *Post) User() *User {
-	return post.user
-}
+// func (post *Post) User() *User {
+// 	return post.user
+// }
 
-func (post *Post) Likes() map[int]*Like {
-	return post.likes
-}
+// func (post *Post) Likes() map[int]*Like {
+// 	return post.likes
+// }
 
-func (post *Post) Id() uuid.UUID {
-	return post.id
-}
+// func (post *Post) Id() uuid.UUID {
+// 	return post.id
+// }
 
 func (post *Post) SetText(text string) {
-	post.text = text
-	post.updatedAt = time.Now()
+	post.Text = text
+	post.UpdatedAt = time.Now()
 }
 
 func (post *Post) SetLike(userId int, like *Like) {
-	post.likes[userId] = like
+	post.Likes[userId] = like
 }
