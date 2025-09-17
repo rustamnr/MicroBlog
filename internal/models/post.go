@@ -6,11 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type Like struct {
-	createdAt time.Time `json: "createdAt"`
-	userFrom  *User     `json: "userFrom"`
-}
-
 type Post struct {
 	createdAt time.Time     `json: "createdAt"`
 	updatedAt time.Time     `json: "updatedAt"`
@@ -53,4 +48,13 @@ func (post *Post) Likes() map[int]*Like {
 
 func (post *Post) Id() uuid.UUID {
 	return post.id
+}
+
+func (post *Post) SetText(text string) {
+	post.text = text
+	post.updatedAt = time.Now()
+}
+
+func (post *Post) SetLike(userId int, like *Like) {
+	post.likes[userId] = like
 }
