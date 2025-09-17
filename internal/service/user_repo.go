@@ -37,7 +37,7 @@ func (r *inMemoryUserRepo) Save(user *models.User) (int, error) {
 
 func (r *inMemoryUserRepo) FindUserById(id int) (*models.User, error) {
 	r.mtx.RLock()
-	defer r.mtx.Unlock()
+	defer r.mtx.RUnlock()
 
 	user, ok := r.data[id]
 	if !ok {

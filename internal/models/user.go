@@ -9,10 +9,10 @@ import (
 )
 
 type User struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	ID       int    `json:"id"`
+	Username string
+	Email    string
+	Password string
+	ID       int
 }
 
 func NewUser(username string, email string, password string) (*User, error) {
@@ -64,7 +64,6 @@ func (user *User) SetPassword(password string) error {
 
 	var (
 		hasLower = false
-		hasUpper = false
 		hasDigit = false
 	)
 
@@ -72,14 +71,12 @@ func (user *User) SetPassword(password string) error {
 		switch {
 		case unicode.IsLower(char):
 			hasLower = true
-		case unicode.IsUpper(char):
-			hasUpper = true
 		case unicode.IsDigit(char):
 			hasDigit = true
 		}
 	}
 
-	if !hasLower || !hasUpper || !hasDigit {
+	if !hasLower || !hasDigit {
 		return customErrors.ErrInvalidPassword
 	}
 

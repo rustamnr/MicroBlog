@@ -26,30 +26,6 @@ func NewPost(user *User, text string) *Post {
 	}
 }
 
-// func (post *Post) CreatedAt() time.Time {
-// 	return post.createdAt
-// }
-
-// func (post *Post) UpdateAt() time.Time {
-// 	return post.updatedAt
-// }
-
-// func (post *Post) Text() string {
-// 	return post.text
-// }
-
-// func (post *Post) User() *User {
-// 	return post.user
-// }
-
-// func (post *Post) Likes() map[int]*Like {
-// 	return post.likes
-// }
-
-// func (post *Post) Id() uuid.UUID {
-// 	return post.id
-// }
-
 func (post *Post) SetText(text string) {
 	post.Text = text
 	post.UpdatedAt = time.Now()

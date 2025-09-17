@@ -3,11 +3,8 @@ package service
 import "github.com/lsmltesting/MicroBlog/internal/models"
 
 type UserService interface {
-	CreateUser(
-		username string,
-		email string,
-		password string,
-	) (int, error)
+	CreateUser(username string, email string, password string) (int, error)
+	GetUserById(id int) (*models.User, error)
 }
 
 type userService struct {
@@ -25,7 +22,6 @@ func (s *userService) CreateUser(username string, email string, password string)
 	if err != nil {
 		return 0, err
 	}
-
 	return s.repo.Save(user)
 }
 
