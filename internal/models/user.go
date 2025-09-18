@@ -16,22 +16,21 @@ type User struct {
 }
 
 func NewUser(username string, email string, password string) (*User, error) {
-	user := &User{
-		Username: username,
-		Email:    email,
-		Password: password,
-	}
+	user := &User{}
 
+	// Set username for user after validating
 	if err := user.SetUsername(username); err != nil {
-		return nil, customErrors.ErrWrongUserName
+		return nil, err
 	}
 
+	// Set email for user after validating
 	if err := user.SetUserEmail(email); err != nil {
-		return nil, customErrors.ErrWrongEmailAddress
+		return nil, err
 	}
 
+	// Set password for user after validating
 	if err := user.SetPassword(password); err != nil {
-		return nil, customErrors.ErrInvalidPassword
+		return nil, err
 	}
 
 	return user, nil

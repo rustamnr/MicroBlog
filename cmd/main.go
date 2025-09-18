@@ -11,7 +11,12 @@ import (
 func main() {
 	userRepo := service.NewInMemoryUserRepo()
 	userService := service.NewUserService(userRepo)
+
+	postRepo := service.NewInMemoryPostRepo()
+	postService := service.NewPostService(postRepo, userService)
+
 	userHttpHandler := handlers.NewUserHTTPHandler(userService)
+	postHttpHandler := handlers.NewPostHTTPHandler(postService)
 
 	serverConfig := server.Config{
 		Port:           "8080",
@@ -21,6 +26,6 @@ func main() {
 		IdleTimeout:    60 * time.Second,
 	}
 
-	server := server.NewHTTPServer(userHttpHandler, serverConfig)
+	server := server.NewHTTPServer(serverConfig, userHttpHandler, postHttpHandler)
 	server.Run()
 }

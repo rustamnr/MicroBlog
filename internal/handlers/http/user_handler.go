@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/lsmltesting/MicroBlog/internal/dto"
 	"github.com/lsmltesting/MicroBlog/internal/service"
 )
@@ -20,7 +21,7 @@ func NewUserHTTPHandler(userService service.UserService) *UserHTTPHandler {
 }
 
 func (h *UserHTTPHandler) sendError(w http.ResponseWriter, message string, statusCode int) {
-	errUserDTO := dto.ErrorUserDTO{
+	errUserDTO := dto.ErrorDTO{
 		Message: message,
 		Time:    time.Now(),
 	}
@@ -32,11 +33,6 @@ func (h *UserHTTPHandler) UserHandlerRegister(w http.ResponseWriter, r *http.Req
 	var userDTO dto.UserDTO
 
 	if err := json.NewDecoder(r.Body).Decode(&userDTO); err != nil {
-		h.sendError(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if err := userDTO.ValidateForCreate(); err != nil {
 		h.sendError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -60,4 +56,9 @@ func (h *UserHTTPHandler) UserHandlerRegister(w http.ResponseWriter, r *http.Req
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
+}
+
+// RegisterRouters registers HTTP routes for handler users
+func (h *UserHTTPHandler) RegisterRouters(router *mux.Router) {
+	router.Path("/register").Methods("POST").HandlerFunc(h.UserHandlerRegister)
 }
