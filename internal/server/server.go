@@ -17,21 +17,20 @@ type Config struct {
 }
 
 type HTTPServer struct {
-	userHttpHandler *handlers.UserHTTPHandler
-	config          Config
-	httpServer      *http.Server
+	httpHandler []handlers.HTTPHandler
+	config      Config
+	httpServer  *http.Server
 }
 
-func NewHTTPServer(userHttpHandler *handlers.UserHTTPHandler, config Config) *HTTPServer {
+func NewHTTPServer(config Config, httpHandler ...handlers.HTTPHandler) *HTTPServer {
 	return &HTTPServer{
-		userHttpHandler: userHttpHandler,
-		config:          config,
+		httpHandler: httpHandler,
+		config:      config,
 	}
 }
 
 func (s *HTTPServer) Run() error {
 	router := mux.NewRouter()
-	router.Path("/register").Methods("POST").HandlerFunc(s.userHttpHandler.UserHandlerRegister)
 
 	s.httpServer = &http.Server{
 		Addr:           ":" + s.config.Port,
@@ -40,6 +39,10 @@ func (s *HTTPServer) Run() error {
 		ReadTimeout:    s.config.ReadTimeout,
 		WriteTimeout:   s.config.WriteTimeout,
 		IdleTimeout:    s.config.IdleTimeout,
+	}
+
+	for _, register := range s.httpHandler {
+		register.RegisterRouters(router)
 	}
 
 	s.httpServer.ListenAndServe()
