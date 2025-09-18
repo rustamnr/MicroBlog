@@ -11,4 +11,5 @@ var (
 	ErrEmptyPostText          = errors.New("empty text for post")
 	ErrPostLikeAlreadyCreated = errors.New("like is already created")
 	ErrNotFindPost            = errors.New("not find post")
+	ErrNotAnyPostExists       = errors.New("no one post exists")
 )

@@ -8,6 +8,7 @@ import (
 type PostService interface {
 	CreatePost(user int, text string) (int, error)
 	GetPostById(postId int) (*models.Post, error)
+	GetAllPosts() (map[int]*models.Post, error)
 }
 
 type postService struct {
@@ -40,4 +41,8 @@ func (s *postService) CreatePost(userId int, text string) (int, error) {
 
 func (s *postService) GetPostById(postId int) (*models.Post, error) {
 	return s.repo.FindPostById(postId)
+}
+
+func (s *postService) GetAllPosts() (map[int]*models.Post, error) {
+	return s.repo.GetAllPosts()
 }

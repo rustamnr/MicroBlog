@@ -10,6 +10,7 @@ import (
 type PostRepository interface {
 	Save(post *models.Post) (int, error)
 	FindPostById(postId int) (*models.Post, error)
+	GetAllPosts() (map[int]*models.Post, error)
 }
 
 type inMemoryPostRepo struct {
@@ -43,4 +44,14 @@ func (r *inMemoryPostRepo) FindPostById(postId int) (*models.Post, error) {
 		return nil, customErrors.ErrEmptyPostText
 	}
 	return post, nil
+}
+
+func (r *inMemoryPostRepo) GetAllPosts() (map[int]*models.Post, error) {
+	r.mtx.RLock()
+	defer r.mtx.RUnlock()
+
+	if len(r.data) == 0 {
+		return nil, customErrors.ErrNotAnyPostExists
+	}
+	return r.data, nil
 }

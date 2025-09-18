@@ -59,7 +59,24 @@ func (p *PostHTTPHandler) HandlerCreatePost(w http.ResponseWriter, r *http.Reque
 	w.Write(b)
 }
 
+func (p *PostHTTPHandler) HandlerGetAllPosts(w http.ResponseWriter, r *http.Request) {
+	posts, err := p.PostService.GetAllPosts()
+	if err != nil {
+		p.sendError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	b, err := json.MarshalIndent(posts, "", "    ")
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+}
+
 // RegisterRouters registers HTTP routes for handler users
 func (p *PostHTTPHandler) RegisterRouters(router *mux.Router) {
 	router.Path("/posts").Methods("POST").HandlerFunc(p.HandlerCreatePost)
+	router.Path("/posts").Methods("GET").HandlerFunc(p.HandlerGetAllPosts)
 }

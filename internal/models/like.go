@@ -3,8 +3,8 @@ package models
 import "time"
 
 type Like struct {
-	CreatedAt time.Time `json:"createdAt"`
-	UserFrom  *User     `json:"userFrom"`
+	CreatedAt time.Time
+	UserFrom  *User
 }
 
 func NewLike(userFrom *User) *Like {
@@ -13,11 +13,3 @@ func NewLike(userFrom *User) *Like {
 		UserFrom:  userFrom,
 	}
 }
-
-// func (like *Like) CreatedAt() time.Time {
-// 	return like.createdAt
-// }
-
-// func (like *Like) UserFrom() *User {
-// 	return like.userFrom
-// }
