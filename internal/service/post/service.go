@@ -1,6 +1,9 @@
-package service
+package post
 
-import "github.com/lsmltesting/MicroBlog/internal/models"
+import (
+	"github.com/lsmltesting/MicroBlog/internal/models"
+	"github.com/lsmltesting/MicroBlog/internal/service/user"
+)
 
 type PostService interface {
 	CreatePost(user int, text string) (int, error)
@@ -9,10 +12,10 @@ type PostService interface {
 
 type postService struct {
 	repo        PostRepository
-	userService UserService
+	userService user.UserService
 }
 
-func NewPostService(repo PostRepository, userService UserService) PostService {
+func NewPostService(repo PostRepository, userService user.UserService) PostService {
 	return &postService{
 		repo:        repo,
 		userService: userService,

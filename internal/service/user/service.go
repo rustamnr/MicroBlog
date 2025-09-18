@@ -1,4 +1,4 @@
-package service
+package user
 
 import "github.com/lsmltesting/MicroBlog/internal/models"
 

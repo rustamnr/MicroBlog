@@ -1,4 +1,4 @@
-package handlers
+package http
 
 import (
 	"encoding/json"
@@ -7,14 +7,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/lsmltesting/MicroBlog/internal/dto"
-	"github.com/lsmltesting/MicroBlog/internal/service"
+	"github.com/lsmltesting/MicroBlog/internal/service/post"
 )
 
 type PostHTTPHandler struct {
-	PostService service.PostService
+	PostService post.PostService
 }
 
-func NewPostHTTPHandler(postService service.PostService) *PostHTTPHandler {
+func NewPostHTTPHandler(postService post.PostService) *PostHTTPHandler {
 	return &PostHTTPHandler{
 		PostService: postService,
 	}

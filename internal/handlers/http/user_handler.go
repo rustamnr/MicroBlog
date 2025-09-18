@@ -1,4 +1,4 @@
-package handlers
+package http
 
 import (
 	"encoding/json"
@@ -7,14 +7,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/lsmltesting/MicroBlog/internal/dto"
-	"github.com/lsmltesting/MicroBlog/internal/service"
+	"github.com/lsmltesting/MicroBlog/internal/service/user"
 )
 
 type UserHTTPHandler struct {
-	UserService service.UserService
+	UserService user.UserService
 }
 
-func NewUserHTTPHandler(userService service.UserService) *UserHTTPHandler {
+func NewUserHTTPHandler(userService user.UserService) *UserHTTPHandler {
 	return &UserHTTPHandler{
 		UserService: userService,
 	}
