@@ -9,7 +9,7 @@ import (
 
 type UserRepository interface {
 	Save(user *models.User) (int, error)
-	FindUserById(id int) (*models.User, error)
+	FindUserByID(ID int) (*models.User, error)
 }
 
 type inMemoryUserRepo struct {
@@ -29,17 +29,18 @@ func (r *inMemoryUserRepo) Save(user *models.User) (int, error) {
 	defer r.mtx.Unlock()
 
 	r.lastID++
+
 	user.ID = r.lastID
 	r.data[r.lastID] = user
 
 	return r.lastID, nil
 }
 
-func (r *inMemoryUserRepo) FindUserById(id int) (*models.User, error) {
+func (r *inMemoryUserRepo) FindUserByID(ID int) (*models.User, error) {
 	r.mtx.RLock()
 	defer r.mtx.RUnlock()
 
-	user, ok := r.data[id]
+	user, ok := r.data[ID]
 	if !ok {
 		return nil, customErrors.ErrNotFindUser
 	}

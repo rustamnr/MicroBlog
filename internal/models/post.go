@@ -7,12 +7,12 @@ import (
 )
 
 type Post struct {
-	CreatedAt time.Time     `json:"createdAt"`
-	UpdatedAt time.Time     `json:"updatedAt"`
-	Text      string        `json:"test"`
-	User      *User         `json:"user"`
-	Likes     map[int]*Like `json:"likes"`
-	Id        int           `json:"id"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Text      string
+	User      *User
+	Likes     map[int]*Like
+	ID        int
 }
 
 func NewPost(user *User, text string) (*Post, error) {

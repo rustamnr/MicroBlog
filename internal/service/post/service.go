@@ -7,8 +7,9 @@ import (
 
 type PostService interface {
 	CreatePost(user int, text string) (int, error)
-	GetPostById(postId int) (*models.Post, error)
+	GetPostByID(postID int) (*models.Post, error)
 	GetAllPosts() (map[int]*models.Post, error)
+	AddLikeToPost(user *models.User, postID int) error
 }
 
 type postService struct {
@@ -23,9 +24,9 @@ func NewPostService(repo PostRepository, userService user.UserService) PostServi
 	}
 }
 
-func (s *postService) CreatePost(userId int, text string) (int, error) {
+func (s *postService) CreatePost(userID int, text string) (int, error) {
 	// Check if user with shared userId is exists
-	user, err := s.userService.GetUserById(userId)
+	user, err := s.userService.GetUserByID(userID)
 	if err != nil {
 		return 0, err
 	}
@@ -39,10 +40,16 @@ func (s *postService) CreatePost(userId int, text string) (int, error) {
 	return s.repo.Save(post)
 }
 
-func (s *postService) GetPostById(postId int) (*models.Post, error) {
-	return s.repo.FindPostById(postId)
+func (s *postService) GetPostByID(postID int) (*models.Post, error) {
+	return s.repo.FindPostByID(postID)
 }
 
 func (s *postService) GetAllPosts() (map[int]*models.Post, error) {
 	return s.repo.GetAllPosts()
+}
+
+func (s *postService) AddLikeToPost(user *models.User, postID int) error {
+	like := models.NewLike(user)
+
+	return s.repo.AddLikeToPost(user, postID, like)
 }

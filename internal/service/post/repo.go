@@ -9,8 +9,9 @@ import (
 
 type PostRepository interface {
 	Save(post *models.Post) (int, error)
-	FindPostById(postId int) (*models.Post, error)
+	FindPostByID(postID int) (*models.Post, error)
 	GetAllPosts() (map[int]*models.Post, error)
+	AddLikeToPost(user *models.User, postID int, like *models.Like) error
 }
 
 type inMemoryPostRepo struct {
@@ -30,16 +31,18 @@ func (r *inMemoryPostRepo) Save(post *models.Post) (int, error) {
 	defer r.mtx.RUnlock()
 
 	r.lastID++
+
+	post.ID = r.lastID
 	r.data[r.lastID] = post
 
 	return r.lastID, nil
 }
 
-func (r *inMemoryPostRepo) FindPostById(postId int) (*models.Post, error) {
+func (r *inMemoryPostRepo) FindPostByID(postID int) (*models.Post, error) {
 	r.mtx.RLock()
 	defer r.mtx.RUnlock()
 
-	post, ok := r.data[postId]
+	post, ok := r.data[postID]
 	if !ok {
 		return nil, customErrors.ErrEmptyPostText
 	}
@@ -54,4 +57,18 @@ func (r *inMemoryPostRepo) GetAllPosts() (map[int]*models.Post, error) {
 		return nil, customErrors.ErrNotAnyPostExists
 	}
 	return r.data, nil
+}
+
+func (r *inMemoryPostRepo) AddLikeToPost(user *models.User, postID int, like *models.Like) error {
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
+
+	_, ok := r.data[postID]
+	if !ok {
+		return customErrors.ErrNotFindPost
+	}
+
+	r.data[postID].Likes[user.ID] = like
+
+	return nil
 }

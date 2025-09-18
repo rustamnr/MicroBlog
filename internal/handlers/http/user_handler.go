@@ -37,13 +37,13 @@ func (h *UserHTTPHandler) UserHandlerRegister(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	userId, err := h.UserService.CreateUser(userDTO.Username, userDTO.Email, userDTO.Password)
+	userID, err := h.UserService.CreateUser(userDTO.Username, userDTO.Email, userDTO.Password)
 	if err != nil {
 		h.sendError(w, err.Error(), http.StatusConflict)
 		return
 	}
 
-	user, err := h.UserService.GetUserById(userId)
+	user, err := h.UserService.GetUserByID(userID)
 	if err != nil {
 		h.sendError(w, err.Error(), http.StatusBadRequest)
 		return

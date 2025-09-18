@@ -17,7 +17,7 @@ func main() {
 	postService := post.NewPostService(postRepo, userService)
 
 	userHttpHandler := handlers.NewUserHTTPHandler(userService)
-	postHttpHandler := handlers.NewPostHTTPHandler(postService)
+	postHttpHandler := handlers.NewPostHTTPHandler(postService, userService)
 
 	serverConfig := server.Config{
 		Port:           "8080",
