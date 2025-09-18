@@ -1,4 +1,4 @@
-package handlers
+package http
 
 import (
 	"encoding/json"
@@ -7,14 +7,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/lsmltesting/MicroBlog/internal/dto"
-	"github.com/lsmltesting/MicroBlog/internal/service"
+	"github.com/lsmltesting/MicroBlog/internal/service/user"
 )
 
 type UserHTTPHandler struct {
-	UserService service.UserService
+	UserService user.UserService
 }
 
-func NewUserHTTPHandler(userService service.UserService) *UserHTTPHandler {
+func NewUserHTTPHandler(userService user.UserService) *UserHTTPHandler {
 	return &UserHTTPHandler{
 		UserService: userService,
 	}
@@ -37,13 +37,13 @@ func (h *UserHTTPHandler) UserHandlerRegister(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	userId, err := h.UserService.CreateUser(userDTO.Username, userDTO.Email, userDTO.Password)
+	userID, err := h.UserService.CreateUser(userDTO.Username, userDTO.Email, userDTO.Password)
 	if err != nil {
 		h.sendError(w, err.Error(), http.StatusConflict)
 		return
 	}
 
-	user, err := h.UserService.GetUserById(userId)
+	user, err := h.UserService.GetUserByID(userID)
 	if err != nil {
 		h.sendError(w, err.Error(), http.StatusBadRequest)
 		return

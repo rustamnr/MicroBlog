@@ -1,10 +1,10 @@
-package service
+package user
 
 import "github.com/lsmltesting/MicroBlog/internal/models"
 
 type UserService interface {
 	CreateUser(username string, email string, password string) (int, error)
-	GetUserById(id int) (*models.User, error)
+	GetUserByID(ID int) (*models.User, error)
 }
 
 type userService struct {
@@ -25,6 +25,6 @@ func (s *userService) CreateUser(username string, email string, password string)
 	return s.repo.Save(user)
 }
 
-func (s *userService) GetUserById(id int) (*models.User, error) {
-	return s.repo.FindUserById(id)
+func (s *userService) GetUserByID(ID int) (*models.User, error) {
+	return s.repo.FindUserByID(ID)
 }

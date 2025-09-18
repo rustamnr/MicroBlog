@@ -5,18 +5,19 @@ import (
 
 	handlers "github.com/lsmltesting/MicroBlog/internal/handlers/http"
 	"github.com/lsmltesting/MicroBlog/internal/server"
-	"github.com/lsmltesting/MicroBlog/internal/service"
+	"github.com/lsmltesting/MicroBlog/internal/service/post"
+	"github.com/lsmltesting/MicroBlog/internal/service/user"
 )
 
 func main() {
-	userRepo := service.NewInMemoryUserRepo()
-	userService := service.NewUserService(userRepo)
+	userRepo := user.NewInMemoryUserRepo()
+	userService := user.NewUserService(userRepo)
 
-	postRepo := service.NewInMemoryPostRepo()
-	postService := service.NewPostService(postRepo, userService)
+	postRepo := post.NewInMemoryPostRepo()
+	postService := post.NewPostService(postRepo, userService)
 
 	userHttpHandler := handlers.NewUserHTTPHandler(userService)
-	postHttpHandler := handlers.NewPostHTTPHandler(postService)
+	postHttpHandler := handlers.NewPostHTTPHandler(postService, userService)
 
 	serverConfig := server.Config{
 		Port:           "8080",
