@@ -22,6 +22,11 @@ func (m *MockUserRepository) FindUserByID(ID int) (*models.User, error) {
 	return args.Get(0).(*models.User), args.Error(1)
 }
 
+func (m *MockUserRepository) UpdatePostHistory(userID int, postID int) error {
+	args := m.Called(userID, postID)
+	return args.Error(0)
+}
+
 func TestUserService_CreateUser_Success(t *testing.T) {
 	mockRepo := new(MockUserRepository)
 	service := NewUserService(mockRepo)

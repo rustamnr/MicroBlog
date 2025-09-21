@@ -33,8 +33,13 @@ func (mockPost *MockPostRepository) GetAllPosts() (map[int]*models.Post, error) 
 	return args.Get(0).(map[int]*models.Post), args.Error(1)
 }
 
-func (mockPost *MockPostRepository) AddLikeToPost(user *models.User, postID int, like *models.Like) error {
-	args := mockPost.Called(user, postID, like)
+func (mockPost *MockPostRepository) AddLikeToPost(postID int, likeID int) error {
+	args := mockPost.Called(postID, likeID)
+	return args.Error(0)
+}
+
+func (mockPost *MockPostRepository) UpdateLikeHistory(postID int, likeID int) error {
+	args := mockPost.Called(postID, likeID)
 	return args.Error(0)
 }
 
@@ -47,6 +52,11 @@ func (mockUser *MockUserRepository) Save(user *models.User) (int, error) {
 func (mockUser *MockUserRepository) FindUserByID(ID int) (*models.User, error) {
 	args := mockUser.Called(ID)
 	return args.Get(0).(*models.User), args.Error(1)
+}
+
+func (mockUser *MockUserRepository) UpdatePostHistory(userID int, postID int) error {
+	args := mockUser.Called(userID, postID)
+	return args.Error(0)
 }
 
 func TestPostService_Save_Success(t *testing.T) {
@@ -73,6 +83,8 @@ func TestPostService_Save_Success(t *testing.T) {
 		return (post.Text == textPost &&
 			post.UserID == userID)
 	})).Return(postID, nil)
+
+	mockRepoUser.On("UpdatePostHistory", userID, postID).Return(nil)
 
 	createdPostId, err := postService.CreatePost(userID, textPost)
 
@@ -102,6 +114,7 @@ func TestPostService_Save_Error(t *testing.T) {
 
 	mockUserRepository.On("FindUserByID", userID).Return(testUser, nil)
 	mockPostRepository.On("Save", mock.Anything).Return(0, assert.AnError)
+	mockUserRepository.On("UpdatePostHistory", userID, mock.Anything).Return(nil).Maybe()
 
 	postID, err := postService.CreatePost(userID, postText)
 

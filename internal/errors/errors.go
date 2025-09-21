@@ -12,4 +12,6 @@ var (
 	ErrPostLikeAlreadyCreated = errors.New("like is already created")
 	ErrNotFindPost            = errors.New("not find post")
 	ErrNotAnyPostExists       = errors.New("no one post exists")
+
+	ErrNotFindLike = errors.New("like not found")
 )

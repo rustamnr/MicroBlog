@@ -9,7 +9,7 @@ type PostService interface {
 	CreatePost(user int, text string) (int, error)
 	GetPostByID(postID int) (*models.Post, error)
 	GetAllPosts() (map[int]*models.Post, error)
-	// AddLikeToPost(user *models.User, postID int) error
+	UpdateLikeHistory(postID int, likeID int) error
 }
 
 type postService struct {
@@ -32,12 +32,20 @@ func (s *postService) CreatePost(userID int, text string) (int, error) {
 	}
 
 	post, err := models.NewPost(userID, text)
-
 	if err != nil {
 		return 0, err
 	}
 
-	return s.repo.Save(post)
+	// After creating post update user's posthistory map
+	postID, err := s.repo.Save(post)
+	if err != nil {
+		return 0, err
+	}
+	err = s.userService.UpdatePostHistory(userID, postID)
+	if err != nil {
+		return 0, err
+	}
+	return postID, nil
 }
 
 func (s *postService) GetPostByID(postID int) (*models.Post, error) {
@@ -48,8 +56,6 @@ func (s *postService) GetAllPosts() (map[int]*models.Post, error) {
 	return s.repo.GetAllPosts()
 }
 
-// func (s *postService) AddLikeToPost(user *models.User, postID int) error {
-// 	like := models.NewLike(user)
-
-// 	return s.repo.AddLikeToPost(user, postID, like)
-// }
+func (s *postService) UpdateLikeHistory(postID int, likeID int) error {
+	return s.repo.UpdateLikeHistory(postID, likeID)
+}
