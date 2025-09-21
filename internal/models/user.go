@@ -9,14 +9,17 @@ import (
 )
 
 type User struct {
-	Username string
-	Email    string
-	Password string
-	ID       int
+	Username    string
+	Email       string
+	Password    string
+	ID          int
+	PostHistory map[int]struct{} // key = postID
 }
 
 func NewUser(username string, email string, password string) (*User, error) {
-	user := &User{}
+	user := &User{
+		PostHistory: make(map[int]struct{}),
+	}
 
 	// Set username for user after validating
 	if err := user.SetUsername(username); err != nil {

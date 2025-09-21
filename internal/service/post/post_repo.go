@@ -11,7 +11,7 @@ type PostRepository interface {
 	Save(post *models.Post) (int, error)
 	FindPostByID(postID int) (*models.Post, error)
 	GetAllPosts() (map[int]*models.Post, error)
-	AddLikeToPost(user *models.User, postID int, like *models.Like) error
+	// AddLikeToPost(user *models.User, postID int, like *models.Like) error
 }
 
 type inMemoryPostRepo struct {
@@ -59,16 +59,18 @@ func (r *inMemoryPostRepo) GetAllPosts() (map[int]*models.Post, error) {
 	return r.data, nil
 }
 
-func (r *inMemoryPostRepo) AddLikeToPost(user *models.User, postID int, like *models.Like) error {
-	r.mtx.Lock()
-	defer r.mtx.Unlock()
+// TODO: create repo for like
 
-	_, ok := r.data[postID]
-	if !ok {
-		return customErrors.ErrNotFindPost
-	}
+// func (r *inMemoryPostRepo) AddLikeToPost(postID int, likeID int) error {
+// 	r.mtx.Lock()
+// 	defer r.mtx.Unlock()
 
-	r.data[postID].Likes[user.ID] = like
+// 	_, ok := r.data[postID]
+// 	if !ok {
+// 		return customErrors.ErrNotFindPost
+// 	}
 
-	return nil
-}
+// 	r.data[postID].HistoryLikes[likeID] = struct{}{}
+
+// 	return nil
+// }

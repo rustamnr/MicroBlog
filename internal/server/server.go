@@ -17,15 +17,21 @@ type Config struct {
 }
 
 type HTTPServer struct {
-	httpHandler []handlers.HTTPHandler
-	config      Config
-	httpServer  *http.Server
+	userHttpHandler *handlers.UserHTTPHandler
+	postHttpHandler *handlers.PostHTTPHandler
+	config          Config
+	httpServer      *http.Server
 }
 
-func NewHTTPServer(config Config, httpHandler ...handlers.HTTPHandler) *HTTPServer {
+func NewHTTPServer(
+	config Config,
+	userHttpHandler *handlers.UserHTTPHandler,
+	postHttpHandler *handlers.PostHTTPHandler,
+) *HTTPServer {
 	return &HTTPServer{
-		httpHandler: httpHandler,
-		config:      config,
+		userHttpHandler: userHttpHandler,
+		postHttpHandler: postHttpHandler,
+		config:          config,
 	}
 }
 
@@ -41,12 +47,15 @@ func (s *HTTPServer) Run() error {
 		IdleTimeout:    s.config.IdleTimeout,
 	}
 
-	for _, register := range s.httpHandler {
-		register.RegisterRouters(router)
-	}
+	// Register methods from userHttpHandler
+	router.Path("/register").Methods("POST").HandlerFunc(s.userHttpHandler.UserHandlerRegister)
 
-	s.httpServer.ListenAndServe()
+	// Register methods from postHttpHandler
+	router.Path("/posts").Methods("POST").HandlerFunc(s.postHttpHandler.HandlerCreatePost)
+	router.Path("/posts").Methods("GET").HandlerFunc(s.postHttpHandler.HandlerGetAllPosts)
 
+	// Register method from likeHttpHandler
+	// router.Path("/posts/{post_id}/like").Methods("POST").Queries("user_id", "{user_id}").HandlerFunc(p.HandlerAddLikeToPost)
 	if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return err
 	}

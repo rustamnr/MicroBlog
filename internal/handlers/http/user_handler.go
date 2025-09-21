@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/lsmltesting/MicroBlog/internal/dto"
 	"github.com/lsmltesting/MicroBlog/internal/service/user"
 )
@@ -56,9 +55,4 @@ func (h *UserHTTPHandler) UserHandlerRegister(w http.ResponseWriter, r *http.Req
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
-}
-
-// RegisterRouters registers HTTP routes for handler users
-func (h *UserHTTPHandler) RegisterRouters(router *mux.Router) {
-	router.Path("/register").Methods("POST").HandlerFunc(h.UserHandlerRegister)
 }

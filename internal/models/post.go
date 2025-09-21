@@ -7,20 +7,20 @@ import (
 )
 
 type Post struct {
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Text      string
-	User      *User
-	Likes     map[int]*Like
-	ID        int
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	Text         string
+	UserID       int
+	HistoryLikes map[int]struct{} // key = LikeID
+	ID           int
 }
 
-func NewPost(user *User, text string) (*Post, error) {
+func NewPost(userID int, text string) (*Post, error) {
 	post := &Post{
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		User:      user,
-		Likes:     make(map[int]*Like),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+		UserID:       userID,
+		HistoryLikes: make(map[int]struct{}),
 	}
 
 	// Set text for post after validating
@@ -41,12 +41,12 @@ func (post *Post) SetText(text string) error {
 	return nil
 }
 
-func (post *Post) SetLike(userId int, like *Like) error {
+func (post *Post) SetLike(userID int, likeID int) error {
 	// Check if like from userId is already created
-	if _, ok := post.Likes[userId]; !ok {
+	if _, ok := post.HistoryLikes[userID]; !ok {
 		return errors.ErrPostLikeAlreadyCreated
 	}
 
-	post.Likes[userId] = like
+	post.HistoryLikes[userID] = struct{}{}
 	return nil
 }
