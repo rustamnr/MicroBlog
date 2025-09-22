@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Save(user *models.User) (int, error)
 	FindUserByID(ID int) (*models.User, error)
+	UpdatePostHistory(userID int, postID int) error
 }
 
 type inMemoryUserRepo struct {
@@ -46,4 +47,18 @@ func (r *inMemoryUserRepo) FindUserByID(ID int) (*models.User, error) {
 	}
 
 	return user, nil
+}
+
+func (r *inMemoryUserRepo) UpdatePostHistory(userID int, postID int) error {
+	r.mtx.RLock()
+	defer r.mtx.RUnlock()
+
+	user, ok := r.data[userID]
+	if !ok {
+		return customErrors.ErrNotFindUser
+	}
+
+	user.PostHistory[postID] = struct{}{}
+
+	return nil
 }

@@ -4,12 +4,15 @@ import "time"
 
 type Like struct {
 	CreatedAt time.Time
-	UserFrom  *User
+	ID        int
+	UserID    int
+	PostID    int
 }
 
-func NewLike(userFrom *User) *Like {
+func NewLike(userID int, postID int) *Like {
 	return &Like{
 		CreatedAt: time.Now(),
-		UserFrom:  userFrom,
+		UserID:    userID,
+		PostID:    postID,
 	}
 }
