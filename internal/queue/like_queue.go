@@ -61,4 +61,5 @@ func (l *likeQueueImplement) AddLike(userID int, postID int) error {
 
 func (l *likeQueueImplement) Close() {
 	close(l.qLike)
+	close(l.stop)
 }
