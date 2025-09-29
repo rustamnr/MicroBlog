@@ -59,6 +59,7 @@ func (s *HTTPServer) Run() error {
 
 	// Register method from likeHttpHandler
 	router.Path("/posts/{post_id}/like").Methods("POST").Queries("user_id", "{user_id}").HandlerFunc(s.likeHttpHandler.HandlerCreateLike)
+	router.Path("/likes").Methods("GET").HandlerFunc(s.likeHttpHandler.HandlerGetAllLikes)
 
 	if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return err

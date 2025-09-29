@@ -69,3 +69,18 @@ func (l *LikeHTTPHandler) HandlerCreateLike(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusCreated)
 	w.Write(b)
 }
+
+func (l *LikeHTTPHandler) HandlerGetAllLikes(w http.ResponseWriter, r *http.Request) {
+	likes, err := l.LikeService.GetAllLikes()
+	if err != nil {
+		l.sendError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	b, err := json.MarshalIndent(likes, " ", "    ")
+	if err != nil {
+		panic(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+}
