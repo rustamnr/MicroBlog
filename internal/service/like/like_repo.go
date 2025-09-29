@@ -3,13 +3,14 @@ package like
 import (
 	"sync"
 
-	"github.com/lsmltesting/MicroBlog/internal/errors"
+	customErrors "github.com/lsmltesting/MicroBlog/internal/errors"
 	"github.com/lsmltesting/MicroBlog/internal/models"
 )
 
 type LikeRepository interface {
 	Save(like *models.Like) (int, error)
 	FindLikeById(likeID int) (*models.Like, error)
+	GetAllLikes() (map[int]*models.Like, error)
 }
 
 type inMemoryLikeRepo struct {
@@ -42,8 +43,18 @@ func (l *inMemoryLikeRepo) FindLikeById(likeID int) (*models.Like, error) {
 
 	like, ok := l.data[likeID]
 	if !ok {
-		return nil, errors.ErrNotFindLike
+		return nil, customErrors.ErrNotFindLike
 	}
 
 	return like, nil
+}
+
+func (l *inMemoryLikeRepo) GetAllLikes() (map[int]*models.Like, error) {
+	l.mtx.RLock()
+	defer l.mtx.RUnlock()
+
+	if len(l.data) == 0 {
+		return nil, customErrors.ErrNotAnyLikeExists
+	}
+	return l.data, nil
 }

@@ -9,6 +9,7 @@ import (
 type LikeService interface {
 	CreateLike(userID int, postID int) (int, error)
 	GetLikeById(likeID int) (*models.Like, error)
+	GetAllLikes() (map[int]*models.Like, error)
 }
 
 type likeService struct {
@@ -61,4 +62,8 @@ func (l *likeService) CreateLike(userID int, postID int) (int, error) {
 
 func (l *likeService) GetLikeById(likeID int) (*models.Like, error) {
 	return l.repo.FindLikeById(likeID)
+}
+
+func (l *likeService) GetAllLikes() (map[int]*models.Like, error) {
+	return l.repo.GetAllLikes()
 }
