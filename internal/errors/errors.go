@@ -14,4 +14,6 @@ var (
 	ErrNotAnyPostExists       = errors.New("no one post exists")
 
 	ErrNotFindLike = errors.New("like not found")
+
+	ErrQueueClosed = errors.New("queue is closed")
 )

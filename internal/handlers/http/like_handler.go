@@ -8,16 +8,19 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/lsmltesting/MicroBlog/internal/dto"
+	"github.com/lsmltesting/MicroBlog/internal/queue"
 	"github.com/lsmltesting/MicroBlog/internal/service/like"
 )
 
 type LikeHTTPHandler struct {
 	LikeService like.LikeService
+	LikeQueue   queue.LikeQueue
 }
 
-func NewLikeHTTPHandler(likeService like.LikeService) *LikeHTTPHandler {
+func NewLikeHTTPHandler(likeQueue queue.LikeQueue, likeService like.LikeService) *LikeHTTPHandler {
 	return &LikeHTTPHandler{
 		LikeService: likeService,
+		LikeQueue:   likeQueue,
 	}
 }
 
@@ -45,18 +48,20 @@ func (l *LikeHTTPHandler) HandlerCreateLike(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	likeID, err := l.LikeService.CreateLike(userID, postID)
+	err = l.LikeQueue.AddLike(userID, postID)
 	if err != nil {
 		l.sendError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	like, err := l.LikeService.GetLikeById(likeID)
-	if err != nil {
-		l.sendError(w, err.Error(), http.StatusBadRequest)
+	queueResponseDTO := dto.LikeQueuedResponse{
+		Message:   "like was added to queue",
+		UserID:    userID,
+		PostID:    postID,
+		Timestamp: time.Now(),
 	}
 
-	b, err := json.MarshalIndent(like, "", "    ")
+	b, err := json.MarshalIndent(queueResponseDTO, "", "    ")
 	if err != nil {
 		panic(err)
 	}
