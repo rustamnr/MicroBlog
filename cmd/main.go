@@ -4,6 +4,7 @@ import (
 	"time"
 
 	handlers "github.com/lsmltesting/MicroBlog/internal/handlers/http"
+	"github.com/lsmltesting/MicroBlog/internal/queue"
 	"github.com/lsmltesting/MicroBlog/internal/server"
 	"github.com/lsmltesting/MicroBlog/internal/service/like"
 	"github.com/lsmltesting/MicroBlog/internal/service/post"
@@ -20,9 +21,18 @@ func main() {
 	likeRepo := like.NewInMemoryLikeRepo()
 	likeService := like.NewLikeService(likeRepo, userService, postService)
 
+	likeQueue := queue.NewLikeQueue(
+		queue.LikeQueueConfig{
+			BufferSize: 100,
+			Workers:    6,
+		},
+		likeService,
+	)
+
 	userHttpHandler := handlers.NewUserHTTPHandler(userService)
 	postHttpHandler := handlers.NewPostHTTPHandler(postService, userService)
-	likeHttpHandler := handlers.NewLikeHTTPHandler(likeService)
+	likeHttpHandler := handlers.NewLikeHTTPHandler(likeQueue, likeService)
+	defer likeQueue.Close()
 
 	serverConfig := server.Config{
 		Port:           "8080",
