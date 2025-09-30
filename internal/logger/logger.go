@@ -58,8 +58,6 @@ func (l *logger) AddLog(
 		return nil
 	case <-l.stop:
 		return customErrors.ErrLoggerChanClosed
-	default:
-		return customErrors.ErrLoggerStopChannelClosed
 	}
 }
 

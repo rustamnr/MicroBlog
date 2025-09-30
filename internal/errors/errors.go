@@ -18,6 +18,5 @@ var (
 
 	ErrQueueClosed = errors.New("queue is closed")
 
-	ErrLoggerChanClosed        = errors.New("channel message of logs is closed")
-	ErrLoggerStopChannelClosed = errors.New("stop chanel for logs is closed")
+	ErrLoggerChanClosed = errors.New("channel message of logs is closed")
 )

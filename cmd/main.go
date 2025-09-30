@@ -113,7 +113,6 @@ func main() {
 	)
 
 	likeQueue.Close()
-	lg.Close()
 
 	lg.AddLog(
 		logger.LevelInfo,
@@ -121,4 +120,5 @@ func main() {
 		make(map[string]string),
 		"Shutdown complete",
 	)
+	lg.Close()
 }
