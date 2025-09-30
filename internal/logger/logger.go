@@ -58,6 +58,8 @@ func (l *logger) AddLog(
 		return nil
 	case <-l.stop:
 		return customErrors.ErrLoggerChanClosed
+	default:
+		return customErrors.ErrLoggerStopChannelClosed
 	}
 }
 
@@ -76,7 +78,7 @@ func (l *logger) worker(workerID int) {
 	log.Printf("[channel for logging] Starting handle with workerID:%d", workerID)
 
 	for {
-		log.Printf("[channel for logging] Worker %d WAINTING for tast...", workerID)
+		log.Printf("[channel for logging] Worker %d WAINTING for task...", workerID)
 
 		select {
 		case msg, ok := <-l.messages:

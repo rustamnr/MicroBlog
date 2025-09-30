@@ -22,21 +22,13 @@ import (
 
 func main() {
 	userRepo := userRepo.NewInMemoryUserRepo()
-	userService := userService.NewUserService(userRepo)
+	baseUserService := userService.NewUserService(userRepo)
 
 	postRepo := postRepo.NewInMemoryPostRepo()
-	postService := postService.NewPostService(postRepo, userService)
+	basePostService := postService.NewPostService(postRepo, baseUserService)
 
 	likeRepo := likeRepo.NewInMemoryLikeRepo()
-	likeService := likeService.NewLikeService(likeRepo, userService, postService)
-
-	likeQueue := queue.NewLikeQueue(
-		queue.LikeQueueConfig{
-			BufferSize: 100,
-			Workers:    6,
-		},
-		likeService,
-	)
+	baseLikeService := likeService.NewLikeService(likeRepo, baseUserService, basePostService)
 
 	lg := logger.NewLogger(
 		logger.LoggerConfig{
@@ -45,9 +37,22 @@ func main() {
 		},
 	)
 
-	userHttpHandler := handlers.NewUserHTTPHandler(userService)
-	postHttpHandler := handlers.NewPostHTTPHandler(postService, userService)
-	likeHttpHandler := handlers.NewLikeHTTPHandler(likeQueue, likeService)
+	userServiceDecorator := userService.NewUserServiceDecorator(baseUserService, lg)
+	postServiceDecorator := postService.NewPostServiceDecorator(basePostService, lg)
+	likeServiceDecorator := likeService.NewLikeServiceDecorator(baseLikeService, lg)
+
+	likeQueue := queue.NewLikeQueue(
+		queue.LikeQueueConfig{
+			BufferSize: 100,
+			Workers:    6,
+		},
+		// baseLikeService,
+		likeServiceDecorator,
+	)
+
+	userHttpHandler := handlers.NewUserHTTPHandler(userServiceDecorator)
+	postHttpHandler := handlers.NewPostHTTPHandler(postServiceDecorator, userServiceDecorator)
+	likeHttpHandler := handlers.NewLikeHTTPHandler(likeQueue, likeServiceDecorator)
 
 	serverConfig := server.Config{
 		Port:           "8080",
