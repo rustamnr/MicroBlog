@@ -139,12 +139,6 @@ func TestPostService_FindPostByID_Success(t *testing.T) {
 	expectedPost := &models.Post{
 		Text:   testPostText,
 		UserID: testUserID,
-		// User: &models.User{
-		// 	Username: "test_user",
-		// 	Email:    "test_user_for_post@gmail.com",
-		// 	Password: "qwert123password",
-		// 	ID:       10,
-		// },
 	}
 
 	mockPostRepository.On("FindPostByID", testPostID).Return(expectedPost, nil)
@@ -236,66 +230,3 @@ func TestPostService_GetAllPosts_Error(t *testing.T) {
 	mockPostRepository.AssertExpectations(t)
 	mockUserRepository.AssertExpectations(t)
 }
-
-// func TestPostService_AddLikeToPost_Success(t *testing.T) {
-// 	mockPostRepository := new(MockPostRepository)
-// 	mockUserRepository := new(MockUserRepository)
-
-// 	userService := user.NewUserService(mockUserRepository)
-// 	postService := NewPostService(mockPostRepository, userService)
-
-// 	expectedUser := &models.User{
-// 		Username: "temp user",
-// 		Email:    "temp_test_user@gmail.com",
-// 		Password: "qw123ery_password",
-// 	}
-// 	expectedPostID := 10
-
-// 	mockPostRepository.On("AddLikeToPost",
-// 		mock.MatchedBy(func(user *models.User) bool {
-// 			return user.Username == expectedUser.Username &&
-// 				user.Email == expectedUser.Email &&
-// 				user.Password == expectedUser.Password
-// 		}),
-// 		expectedPostID,
-// 		mock.MatchedBy(func(like *models.Like) bool {
-// 			return like != nil &&
-// 				like.UserFrom.ID == expectedUser.ID
-// 		}),
-// 	).Return(nil)
-
-// 	err := postService.AddLikeToPost(expectedUser, expectedPostID)
-
-// 	assert.NoError(t, err)
-
-// 	mockPostRepository.AssertExpectations(t)
-// 	mockUserRepository.AssertExpectations(t)
-// }
-
-// func TestPostService_AddLikeToPost_Error(t *testing.T) {
-// 	mockPostRepository := new(MockPostRepository)
-// 	mockUserRepository := new(MockUserRepository)
-
-// 	userService := user.NewUserService(mockUserRepository)
-// 	postService := NewPostService(mockPostRepository, userService)
-
-// 	expectedUser := &models.User{
-// 		Username: "temp user",
-// 		Email:    "temp_test_user@gmail.com",
-// 		Password: "qw123ery_password",
-// 	}
-// 	expectedPostID := 10
-
-// 	mockPostRepository.On("AddLikeToPost",
-// 		mock.Anything,
-// 		mock.Anything,
-// 		mock.Anything,
-// 	).Return(assert.AnError)
-
-// 	err := postService.AddLikeToPost(expectedUser, expectedPostID)
-
-// 	assert.Error(t, err)
-
-// 	mockPostRepository.AssertExpectations(t)
-// 	mockUserRepository.AssertExpectations(t)
-// }

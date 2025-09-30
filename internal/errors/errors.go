@@ -17,4 +17,6 @@ var (
 	ErrNotAnyLikeExists = errors.New("no one like exists")
 
 	ErrQueueClosed = errors.New("queue is closed")
+
+	ErrLoggerChanClosed = errors.New("channel message of logs is closed")
 )

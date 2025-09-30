@@ -9,6 +9,7 @@ type Like struct {
 	PostID    int
 }
 
+// TODO: add new param createdat
 func NewLike(userID int, postID int) *Like {
 	return &Like{
 		CreatedAt: time.Now(),

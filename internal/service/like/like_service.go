@@ -2,6 +2,7 @@ package like
 
 import (
 	"github.com/lsmltesting/MicroBlog/internal/models"
+	"github.com/lsmltesting/MicroBlog/internal/repo/like"
 	"github.com/lsmltesting/MicroBlog/internal/service/post"
 	"github.com/lsmltesting/MicroBlog/internal/service/user"
 )
@@ -13,14 +14,14 @@ type LikeService interface {
 }
 
 type likeService struct {
-	repo LikeRepository
+	repo like.LikeRepository
 
 	userService user.UserService
 	postService post.PostService
 }
 
 func NewLikeService(
-	repo LikeRepository,
+	repo like.LikeRepository,
 	userService user.UserService,
 	postService post.PostService,
 ) LikeService {

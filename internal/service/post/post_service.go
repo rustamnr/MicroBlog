@@ -2,6 +2,7 @@ package post
 
 import (
 	"github.com/lsmltesting/MicroBlog/internal/models"
+	"github.com/lsmltesting/MicroBlog/internal/repo/post"
 	"github.com/lsmltesting/MicroBlog/internal/service/user"
 )
 
@@ -13,11 +14,11 @@ type PostService interface {
 }
 
 type postService struct {
-	repo        PostRepository
+	repo        post.PostRepository
 	userService user.UserService
 }
 
-func NewPostService(repo PostRepository, userService user.UserService) PostService {
+func NewPostService(repo post.PostRepository, userService user.UserService) PostService {
 	return &postService{
 		repo:        repo,
 		userService: userService,
