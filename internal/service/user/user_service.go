@@ -1,6 +1,9 @@
 package user
 
-import "github.com/lsmltesting/MicroBlog/internal/models"
+import (
+	"github.com/lsmltesting/MicroBlog/internal/models"
+	"github.com/lsmltesting/MicroBlog/internal/repo/user"
+)
 
 type UserService interface {
 	CreateUser(username string, email string, password string) (int, error)
@@ -9,10 +12,10 @@ type UserService interface {
 }
 
 type userService struct {
-	repo UserRepository
+	repo user.UserRepository
 }
 
-func NewUserService(repo UserRepository) UserService {
+func NewUserService(repo user.UserRepository) UserService {
 	return &userService{
 		repo: repo,
 	}

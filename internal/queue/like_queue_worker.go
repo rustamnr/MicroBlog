@@ -12,19 +12,20 @@ func (l *likeQueueImplement) startWorkers() {
 
 func (l *likeQueueImplement) worker(workerID int) {
 	log.Println("Starting handle queue with workerID:", workerID)
+	for {
+		select {
+		case likeForChan, ok := <-l.qLike:
+			if !ok {
+				log.Printf("Worker: %d, channel is closed.", workerID)
+				return
+			}
 
-	select {
-	case likeForChan, ok := <-l.qLike:
-		if !ok {
-			log.Printf("Worker: %d, channel is closed.", workerID)
+			l.handleQueue(likeForChan)
+
+		case <-l.stop:
+			log.Printf("Catch stop signal with worker: %d", workerID)
 			return
 		}
-
-		l.handleQueue(likeForChan)
-
-	case <-l.stop:
-		log.Printf("Catch signal that channel is closed")
-		return
 	}
 }
 
