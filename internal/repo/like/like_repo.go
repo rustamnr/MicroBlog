@@ -26,8 +26,8 @@ func NewInMemoryLikeRepo() LikeRepository {
 }
 
 func (l *inMemoryLikeRepo) Save(like *models.Like) (int, error) {
-	l.mtx.RLock()
-	defer l.mtx.RUnlock()
+	l.mtx.Lock()
+	defer l.mtx.Unlock()
 
 	l.lastID++
 

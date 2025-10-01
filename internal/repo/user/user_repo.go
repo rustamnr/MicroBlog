@@ -50,8 +50,8 @@ func (r *inMemoryUserRepo) FindUserByID(ID int) (*models.User, error) {
 }
 
 func (r *inMemoryUserRepo) UpdatePostHistory(userID int, postID int) error {
-	r.mtx.RLock()
-	defer r.mtx.RUnlock()
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
 
 	user, ok := r.data[userID]
 	if !ok {
