@@ -27,8 +27,8 @@ func NewInMemoryPostRepo() PostRepository {
 }
 
 func (r *inMemoryPostRepo) Save(post *models.Post) (int, error) {
-	r.mtx.RLock()
-	defer r.mtx.RUnlock()
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
 
 	r.lastID++
 
@@ -66,6 +66,10 @@ func (r *inMemoryPostRepo) UpdateLikeHistory(postID int, likeID int) error {
 	_, ok := r.data[postID]
 	if !ok {
 		return customErrors.ErrNotFindPost
+	}
+
+	if r.data[postID].HistoryLikes == nil {
+		r.data[postID].HistoryLikes = make(map[int]struct{})
 	}
 
 	r.data[postID].HistoryLikes[likeID] = struct{}{}

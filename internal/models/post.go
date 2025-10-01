@@ -17,10 +17,9 @@ type Post struct {
 
 func NewPost(userID int, text string) (*Post, error) {
 	post := &Post{
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
-		UserID:       userID,
-		HistoryLikes: make(map[int]struct{}),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    userID,
 	}
 
 	// Set text for post after validating
@@ -41,12 +40,13 @@ func (post *Post) SetText(text string) error {
 	return nil
 }
 
-func (post *Post) SetLike(userID int, likeID int) error {
-	// Check if like from userId is already created
-	if _, ok := post.HistoryLikes[userID]; !ok {
-		return errors.ErrPostLikeAlreadyCreated
-	}
+// func (post *Post) SetLike(userID int, likeID int) error {
 
-	post.HistoryLikes[userID] = struct{}{}
-	return nil
-}
+// 	// Check if like from userId is already created
+// 	if _, ok := post.HistoryLikes[userID]; !ok {
+// 		return errors.ErrPostLikeAlreadyCreated
+// 	}
+
+// 	post.HistoryLikes[userID] = struct{}{}
+// 	return nil
+// }

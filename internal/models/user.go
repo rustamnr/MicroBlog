@@ -8,6 +8,8 @@ import (
 	customErrors "github.com/lsmltesting/MicroBlog/internal/errors"
 )
 
+var usernameRegex = regexp.MustCompile(`^[A-Za-z][A-Za-z0-9]*$`)
+
 type User struct {
 	Username    string
 	Email       string
@@ -17,9 +19,7 @@ type User struct {
 }
 
 func NewUser(username string, email string, password string) (*User, error) {
-	user := &User{
-		PostHistory: make(map[int]struct{}),
-	}
+	user := &User{}
 
 	// Set username for user after validating
 	if err := user.SetUsername(username); err != nil {
@@ -40,8 +40,7 @@ func NewUser(username string, email string, password string) (*User, error) {
 }
 
 func (user *User) SetUsername(username string) error {
-	re := regexp.MustCompile(`^[A-Za-z][A-Za-z0-9]*$`)
-	if re.MatchString(username) {
+	if usernameRegex.MatchString(username) {
 		user.Username = username
 		return nil
 	}
