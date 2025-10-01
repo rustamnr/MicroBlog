@@ -19,9 +19,7 @@ type User struct {
 }
 
 func NewUser(username string, email string, password string) (*User, error) {
-	user := &User{
-		PostHistory: make(map[int]struct{}),
-	}
+	user := &User{}
 
 	// Set username for user after validating
 	if err := user.SetUsername(username); err != nil {

@@ -58,6 +58,10 @@ func (r *inMemoryUserRepo) UpdatePostHistory(userID int, postID int) error {
 		return customErrors.ErrNotFindUser
 	}
 
+	if user.PostHistory == nil {
+		user.PostHistory = make(map[int]struct{})
+	}
+
 	user.PostHistory[postID] = struct{}{}
 
 	return nil

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	repo "github.com/lsmltesting/MicroBlog/internal/repo/user"
+	"github.com/lsmltesting/MicroBlog/internal/repo/user"
 )
 
 func BenchmarkCreateUser(b *testing.B) {
-	userRepo := repo.NewInMemoryUserRepo()
+	userRepo := user.NewInMemoryUserRepo()
 	userService := NewUserService(userRepo)
 
 	users := make(
@@ -28,5 +28,48 @@ func BenchmarkCreateUser(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		userService.CreateUser(users[i].username, users[i].email, users[i].password)
+	}
+}
+
+func BenchmarkGetUserByID(b *testing.B) {
+	userRepo := user.NewInMemoryUserRepo()
+	userService := NewUserService(userRepo)
+
+	usersID := make([]int, b.N)
+
+	for i := 0; i < b.N; i++ {
+		userID, _ := userService.CreateUser(
+			fmt.Sprintf("testUsername-%d", i),
+			fmt.Sprintf("testemail-%d@gtest.ru", i),
+			fmt.Sprintf("testPassword123qwerty-%d", i),
+		)
+		usersID[i] = userID
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		userService.GetUserByID(usersID[i])
+	}
+}
+
+func BenchmarkUpdatePostHistory(b *testing.B) {
+	userRepo := user.NewInMemoryUserRepo()
+	userService := NewUserService(userRepo)
+
+	usersID := make([]int, b.N)
+
+	for i := 0; i < b.N; i++ {
+		userID, _ := userService.CreateUser(
+			fmt.Sprintf("testUsername-%d", i),
+			fmt.Sprintf("testemail-%d@gtest.ru", i),
+			fmt.Sprintf("testPassword123qwerty-%d", i),
+		)
+
+		usersID[i] = userID
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		userService.UpdatePostHistory(usersID[i], i)
 	}
 }
