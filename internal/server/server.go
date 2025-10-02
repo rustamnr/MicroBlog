@@ -1,7 +1,9 @@
 package server
 
 import (
+	"log"
 	"net/http"
+	"net/http/pprof"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -9,7 +11,9 @@ import (
 )
 
 type Config struct {
-	Port           string
+	MainPort       string
+	PprofPort      string
+	WithPprof      bool
 	MaxHeaderBytes int
 	ReadTimeout    time.Duration
 	WriteTimeout   time.Duration
@@ -39,10 +43,12 @@ func NewHTTPServer(
 }
 
 func (s *HTTPServer) Run() error {
+	s.RunPprof()
+
 	router := mux.NewRouter()
 
 	s.httpServer = &http.Server{
-		Addr:           ":" + s.config.Port,
+		Addr:           s.config.MainPort,
 		Handler:        router,
 		MaxHeaderBytes: s.config.MaxHeaderBytes,
 		ReadTimeout:    s.config.ReadTimeout,
@@ -66,4 +72,39 @@ func (s *HTTPServer) Run() error {
 	}
 
 	return nil
+}
+
+func (s *HTTPServer) RunPprof() {
+	if !s.config.WithPprof {
+		return
+	}
+
+	go func() {
+		pprofRouter := mux.NewRouter()
+
+		pprofServer := &http.Server{
+			Addr:           s.config.PprofPort,
+			Handler:        pprofRouter,
+			MaxHeaderBytes: s.config.MaxHeaderBytes,
+			ReadTimeout:    s.config.ReadTimeout,
+			WriteTimeout:   s.config.WriteTimeout,
+			IdleTimeout:    s.config.IdleTimeout,
+		}
+
+		pprofRouter.HandleFunc("/debug/pprof/", pprof.Index)
+		pprofRouter.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+		pprofRouter.HandleFunc("/debug/pprof/profile", pprof.Profile)
+		pprofRouter.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+		pprofRouter.HandleFunc("/debug/pprof/trace", pprof.Trace)
+		pprofRouter.Handle("/debug/pprof/goroutine", pprof.Handler("goroutine"))
+		pprofRouter.Handle("/debug/pprof/heap", pprof.Handler("heap"))
+		pprofRouter.Handle("/debug/pprof/threadcreate", pprof.Handler("threadcreate"))
+		pprofRouter.Handle("/debug/pprof/block", pprof.Handler("block"))
+		pprofRouter.Handle("/debug/pprof/mutex", pprof.Handler("mutex"))
+		pprofRouter.Handle("/debug/pprof/allocs", pprof.Handler("allocs"))
+
+		if err := pprofServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Printf("pprofServer is failed: %v", err)
+		}
+	}()
 }

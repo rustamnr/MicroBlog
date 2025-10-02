@@ -55,7 +55,9 @@ func main() {
 	likeHttpHandler := handlers.NewLikeHTTPHandler(likeQueue, likeServiceDecorator)
 
 	serverConfig := server.Config{
-		Port:           "8080",
+		MainPort:       ":8080",
+		PprofPort:      ":3366",
+		WithPprof:      true,
 		MaxHeaderBytes: 1 << 20, // 1 MB
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
