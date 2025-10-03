@@ -12,6 +12,7 @@ type LoggerConfig struct {
 	BufferSize int
 }
 
+// интерфейс логгера должен содержать методы события (Info, Warn, Error, Debug, Fatal), возможно Init
 type Logger interface {
 	Close()
 	AddLog(
